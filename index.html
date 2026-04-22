@@ -381,12 +381,11 @@ async function fetchShopifyProduct(url) {
   const jsonUrl = `https://${domain}/products/${handle}.json`;
 
   // Use allorigins as CORS proxy
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(jsonUrl)}`;
+  const proxyUrl = `https://thingproxy.freeboard.io/fetch/${jsonUrl}`;
   const res = await fetch(proxyUrl);
   if (!res.ok) throw new Error(`Could not reach store (HTTP ${res.status})`);
 
-  const data = await res.json();
-  const parsed = JSON.parse(data.contents);
+  const parsed = await res.json();
   if (!parsed.product) throw new Error('No product found at this URL. Make sure it\'s a public Shopify product page.');
 
   return parsed.product;
@@ -698,7 +697,8 @@ async function publishToShopify() {
       }
     };
 
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://${store}/admin/api/2024-01/products.json`)}`;
+    const shopifyUrl = `https://${store}/admin/api/2024-01/products.json`;
+    const proxyUrl = `https://thingproxy.freeboard.io/fetch/${shopifyUrl}`;
 
     const res = await fetch(proxyUrl, {
       method: 'POST',
